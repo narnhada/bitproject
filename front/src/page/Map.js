@@ -6,12 +6,11 @@ import "../css/map.css";
 import { Link } from "react-router-dom";
 
 function Map() {
-  const [sig_cd1,setSig_cd1]=useState("");
-  const [gu, setGu]=useState("");
-  const [message, setMessage]=useState("");
-  const [dong, setDong]=useState("개포동");
+  const [sig_cd1, setSig_cd1] = useState("");
+  const [gu, setGu] = useState("");
+  const [message, setMessage] = useState("");
+  const [dong, setDong] = useState("개포동");
   useEffect(() => {
-    
     const script = document.createElement("script");
     script.async = true;
     script.src =
@@ -27,7 +26,6 @@ function Map() {
             level: 10, // 지도의 확대 레벨
           };
 
-       
         var map = new kakao.maps.Map(mapContainer, mapOption);
         var customOverlay = new kakao.maps.CustomOverlay();
 
@@ -35,33 +33,30 @@ function Map() {
           var data = geojson.features;
           var coordinates = []; //좌표 저장할 배열
           var name = ""; //행정 구 이름
-          var sig_cd=""
+          var sig_cd = "";
           $.each(data, function (index, val) {
             coordinates = val.geometry.coordinates;
-            sig_cd=val.properties.SIG_CD;
+            sig_cd = val.properties.SIG_CD;
             name = val.properties.SIG_KOR_NM;
-            displayArea(coordinates, name,sig_cd);
+            displayArea(coordinates, name, sig_cd);
           });
         });
 
         var polygons = []; //function 안 쪽에 지역변수로 넣으니깐 폴리곤 하나 생성할 때마다 배열이 비어서 클릭했을 때 전체를 못 없애줌.  그래서 전역변수로 만듦.
 
         //행정구역 폴리곤
-        function displayArea(coordinates, name,sig_cd) {
+        function displayArea(coordinates, name, sig_cd) {
           var path = []; //폴리곤 그려줄 path
           var points = []; //중심좌표 구하기 위한 지역구 좌표들
-          
-        
+
           $.each(coordinates[0][0], function (index, coordinate) {
             //console.log(coordinates)를 확인해보면 보면 [0]번째에 배열이 주로 저장이 됨.  그래서 [0]번째 배열에서 꺼내줌.
-            
+
             var point = new Object();
             point.x = coordinate[1];
             point.y = coordinate[0];
-            points.push(point);   
+            points.push(point);
             path.push(new kakao.maps.LatLng(coordinate[1], coordinate[0])); //new daum.maps.LatLng가 없으면 인식을 못해서 path 배열에 추가
-           
-           
           });
 
           // 다각형을 생성합니다
@@ -87,7 +82,7 @@ function Map() {
             });
 
             customOverlay.setContent('<div class="area">' + name + "</div>");
-            
+
             customOverlay.setPosition(mouseEvent.latLng);
             customOverlay.setMap(map);
           });
@@ -110,9 +105,16 @@ function Map() {
 
           // 다각형에 click 이벤트를 등록하고 이벤트가 발생하면 해당 지역 확대을 확대합니다.
           kakao.maps.event.addListener(polygon, "click", function () {
-            window.sessionStorage.setItem("gu",name);
-            
-            window.location.replace('/map/'+sig_cd);
+            window.sessionStorage.setItem("gu", name);
+            var level = map.getLevel() - 2;
+
+            var positions = centroid(points);
+            var positionx = positions[0];
+            var positiony = positions[1];
+            window.sessionStorage.setItem("level", level);
+            window.sessionStorage.setItem("positionx", positionx);
+            window.sessionStorage.setItem("positiony", positiony);
+            window.location.replace("/map/" + sig_cd);
             // // 현재 지도 레벨에서 2레벨 확대한 레벨
             // var level = map.getLevel() - 3;
             // setGu(name);
@@ -142,7 +144,8 @@ function Map() {
             y += (p1.y + p2.y) * f;
             area += f * 3;
           }
-          return new kakao.maps.LatLng(x / area, y / area);
+          var position = [x / area, y / area];
+          return position;
         }
         function deletePolygon(polygons) {
           for (var i = 0; i < polygons.length; i++) {
@@ -153,11 +156,10 @@ function Map() {
       });
     };
   }, []);
-  const namei=()=>{
+  const namei = () => {
     console.log(gu);
-  }
+  };
   const OnSubmit = (e) => {
-    
     const post = {
       gu: gu,
       dong: dong,
@@ -172,20 +174,17 @@ function Map() {
       .then((response) => response.text())
       .then((message) => {
         window.sessionStorage.setItem("message", message);
-       
       });
-      
   };
   return (
     <>
-     
       <div className="map" id="map"></div>
       {/* <form onSubmit={OnSubmit} >
         <input type="submit" value="전송"></input>
 
       </form> */}
       {/* <button onClick={namei}>구이름</button> */}
-      
+
       {/* {(window.sessionStorage.getItem("message")!==""?(<img src={window.sessionStorage.getItem("message")}></img>) :(<p>이미지가 없음 </p>))} */}
     </>
     //<Test></Test>

@@ -1,7 +1,7 @@
 # 데이터 분석을 위해 pandas를, 수치계산을 위해 numpy를, 시각화를 위해 seaborn을 불러옵니다.
 import pandas as pd
 import matplotlib.pyplot as plt
-plt.rcParams.update({'font.size': 20})
+plt.rcParams.update({'font.size': 30})
 
 import sys
 print("ad")
@@ -25,7 +25,7 @@ def GuGraph(a):
     plt.title("강남구  영업상태수")
     plt.xlabel("동별영업상태")
     plt.ylabel("영업상태수")
-    plt.savefig("C:\\react\\project\\springbootdatabase\\src\\main\\java\\com\\springbootdatabase\\hellopython\\image1.png")
+    plt.savefig("C:\\react\\project\\springbootdatabase\\src\\main\\resources\\static\\graph\\image1.png")
     print("Complete")
 
     return GuGraph
@@ -35,7 +35,7 @@ def DongGraph(a,b):
     plt.title(a + b + " 영업상태수")
     plt.xlabel("동별영업상태")
     plt.ylabel("영업상태수")
-    plt.savefig("C:\\react\\project\\springbootdatabase\\src\\main\\java\\com\\springbootdatabase\\hellopython\\image2.png")
+    plt.savefig("C:\\react\\project\\springbootdatabase\\src\\main\\resources\\static\\graph\\image2.png")
     print("Complete2")
 
     return DongGraph

@@ -6,4 +6,12 @@ create database project;
 
 use project;
 
-create table members(id varchar(128) not null, password varchar(128) not null,name varchar(128) not null, age int not null,primary key(id));
+create table members(
+	id varchar(128) not null,
+	password varchar(128) not null,
+    name varchar(128) not null,
+    age int not null,
+    capital varchar(128),
+    loan varchar(128),
+    primary key(id)
+);

@@ -6,7 +6,7 @@ import "../css/header1.css";
 
 function Header1() {
     const Back =() =>{
-        window.history.back();
+        window.location.replace("/map");
     } 
     
     return (
